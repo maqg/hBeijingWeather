@@ -28,19 +28,13 @@ public class MainActivity extends Activity {
 
     Button mButton = null;
     TextView mTextView = null;
-    Context mContext = null;
-    String content = null;
-
     List<TextView> views = new ArrayList<>();
-
-
     String AK_BAIDU_API = "BF7bdc283d89f4692247027dd40c186d";
 
     //接受传过来得消息
     Handler handler = new Handler() {
 
         public void fillTomorrows(JSONArray weather_data) throws JSONException {
-
             int i;
 
             String date;
@@ -74,10 +68,10 @@ public class MainActivity extends Activity {
         public void handleMessage(Message msg) {
 
             JSONObject json;
+            String content;
 
             switch (msg.what) {
                 case LOAD_PROGRESS:
-                    content = (String) msg.obj;
                     mTextView.setText("数据获取中，请稍候......");
                     break;
                 case LOAD_COMPLETE:
@@ -137,7 +131,7 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mContext = this;
+        //mContext = this;
         setContentView(R.layout.activity_main);
 
         mButton = (Button) findViewById(R.id.button1);
