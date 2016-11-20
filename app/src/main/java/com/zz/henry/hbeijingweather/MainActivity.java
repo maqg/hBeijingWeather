@@ -1,4 +1,4 @@
-package com.zz.henry.httpresource;
+package com.zz.henry.hbeijingweather;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,8 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;

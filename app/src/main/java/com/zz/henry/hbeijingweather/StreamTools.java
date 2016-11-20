@@ -1,4 +1,4 @@
-package com.zz.henry.httpresource;
+package com.zz.henry.hbeijingweather;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
