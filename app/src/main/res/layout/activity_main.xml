@@ -9,17 +9,11 @@
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
     android:weightSum="1">
 
-    <Button
-        android:layout_width="182dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/button1"
-        android:contentDescription="看看天气怎么样"
-        android:text="看看天气怎么样" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="天气信息："
+        android:layout_height="120dp"
+        android:text=""
         android:id="@+id/mainText"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="10dp"
@@ -28,21 +22,39 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="天气信息："
-        android:id="@+id/tomorrow"
+        android:layout_height="80dp"
+        android:text=""
+        android:id="@+id/day1"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_gravity="fill_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="天气信息："
-        android:id="@+id/aftertomorrow"
+        android:layout_height="80dp"
+        android:text=""
+        android:id="@+id/day2"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_gravity="fill_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:text=""
+        android:id="@+id/day3"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="fill_horizontal" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button1"
+        android:contentDescription="看看天气怎么样"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="100dp"
+        android:text="看看天气怎么样" />
 
 
 </LinearLayout>

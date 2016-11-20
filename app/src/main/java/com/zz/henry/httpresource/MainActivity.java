@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends Activity {
@@ -30,10 +33,44 @@ public class MainActivity extends Activity {
     Context mContext = null;
     String content = null;
 
+    List<TextView> views = new ArrayList<>();
+
+
     String AK_BAIDU_API = "BF7bdc283d89f4692247027dd40c186d";
 
     //接受传过来得消息
     Handler handler = new Handler() {
+
+        public void fillTomorrows(JSONArray weather_data) throws JSONException {
+
+            int i;
+
+            String date;
+            String weather;
+            String wind;
+            String temperature;
+
+
+            for (i = 0; i < 3; i++) {
+
+                TextView view = views.get(i);
+                String body = "";
+
+                JSONObject day = weather_data.getJSONObject(i + 1);
+                date = day.getString("date");
+                weather = day.getString("weather");
+                wind = day.getString("wind");
+                temperature = day.getString("temperature");
+
+                body += "日期：" + date + "\n";
+                body += "天气情况：" + weather + "\n";
+                body += "风速：" + wind + "\n";
+                body += "温度" + temperature + "\n";
+
+                view.setText(body);
+            }
+
+        }
 
         @Override
         public void handleMessage(Message msg) {
@@ -57,12 +94,37 @@ public class MainActivity extends Activity {
                     }
 
                     try {
-                        textMain += json.getString("date");
+
+                        String date = json.getString("date");
+                        JSONArray results = json.getJSONArray("results");
+                        JSONObject data = results.getJSONObject(0);
+
+                        String location = data.getString("currentCity");
+                        String pm25 = data.getString("pm25");
+
+                        JSONArray weather_data = data.getJSONArray("weather_data");
+
+                        JSONObject today = weather_data.getJSONObject(0);
+
+
+                        String weather = today.getString("weather");
+                        String wind = today.getString("wind");
+                        String temperature = today.getString("temperature");
+
+                        textMain += "日期：" + date + "\n";
+                        textMain += "位置：" + location + "\n";
+                        textMain += "PM2.5：" + pm25 + "\n";
+                        textMain += "天气情况：" + weather + "\n";
+                        textMain += "风速：" + wind + "\n";
+                        textMain += "温度" + temperature + "\n";
+
+                        fillTomorrows(weather_data);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
-                    mTextView.setText("Finished: " + textMain);
+                    mTextView.setText(textMain);
 
                     break;
                 case LOAD_ERROR:
@@ -82,6 +144,12 @@ public class MainActivity extends Activity {
 
         mButton = (Button) findViewById(R.id.button1);
         mTextView = (TextView) findViewById(R.id.mainText);
+
+        views.add((TextView)findViewById(R.id.day1));
+        views.add((TextView)findViewById(R.id.day2));
+        views.add((TextView)findViewById(R.id.day3));
+
+        GetResourceInfo();
 
         mButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
