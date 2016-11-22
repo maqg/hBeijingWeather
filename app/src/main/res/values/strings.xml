@@ -4,4 +4,5 @@
     <string name="app_name">北京天气</string>
     <string name="hello_world">Beijing Weather</string>
     <string name="action_settings">Settings</string>
+    <string name="imageDesc">Loading</string>
 </resources>

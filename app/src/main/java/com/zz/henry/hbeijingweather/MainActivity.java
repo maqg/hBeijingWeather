@@ -2,19 +2,24 @@ package com.zz.henry.hbeijingweather;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +33,9 @@ public class MainActivity extends Activity {
 
     Button mButton = null;
     TextView mTextView = null;
+    ImageView imageView = null;
     List<TextView> views = new ArrayList<>();
+
     String AK_BAIDU_API = "BF7bdc283d89f4692247027dd40c186d";
 
     //接受传过来得消息
@@ -75,7 +82,11 @@ public class MainActivity extends Activity {
                     mTextView.setText("数据获取中，请稍候......");
                     break;
                 case LOAD_COMPLETE:
+
                     String textMain = "";
+                    Bitmap bitmap = null;
+                    String picUrl = null;
+
                     content = (String) msg.obj;
                     try {
                         json = new JSONObject(content);
@@ -98,12 +109,14 @@ public class MainActivity extends Activity {
 
                         JSONObject today = weather_data.getJSONObject(0);
 
-
+                        picUrl = today.getString("dayPictureUrl");
+                        String realtime = today.getString("date");
                         String weather = today.getString("weather");
                         String wind = today.getString("wind");
                         String temperature = today.getString("temperature");
 
                         textMain += "日期：" + date + "\n";
+                        textMain += "实时：" + realtime + "\n";
                         textMain += "位置：" + location + "\n";
                         textMain += "PM2.5：" + pm25 + "\n";
                         textMain += "天气情况：" + weather + "\n";
@@ -115,6 +128,18 @@ public class MainActivity extends Activity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
+                    /*
+                    try {
+                        bitmap = ImageService.getImageBitmap(picUrl);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (bitmap != null) {
+                        imageView.setImageBitmap(bitmap);
+                    }
+                    */
+
 
                     mTextView.setText(textMain);
 
@@ -136,10 +161,11 @@ public class MainActivity extends Activity {
 
         mButton = (Button) findViewById(R.id.button1);
         mTextView = (TextView) findViewById(R.id.mainText);
+        imageView = (ImageView) findViewById(R.id.imageView);
 
-        views.add((TextView)findViewById(R.id.day1));
-        views.add((TextView)findViewById(R.id.day2));
-        views.add((TextView)findViewById(R.id.day3));
+        views.add((TextView) findViewById(R.id.day1));
+        views.add((TextView) findViewById(R.id.day2));
+        views.add((TextView) findViewById(R.id.day3));
 
         GetResourceInfo();
 
@@ -188,7 +214,7 @@ public class MainActivity extends Activity {
 
             URL subwayUrl = new URL("http://api.map.baidu.com/telematics/v3/weather?location=beijing&output=json&ak=" + AK_BAIDU_API);
 
-            HttpURLConnection conn = (HttpURLConnection)subwayUrl.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) subwayUrl.openConnection();
             conn.setDoInput(true);
             conn.setConnectTimeout(10000);
             conn.setRequestMethod("GET");

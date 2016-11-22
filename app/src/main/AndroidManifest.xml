@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zz.henry.hbeijingweather" >
+    xmlns:uses-permissionandroid="http://schemas.android.com/apk/res-auto"
+    package="com.zz.henry.hbeijingweather">
 
     <application
         android:allowBackup="true"
@@ -18,5 +19,6 @@
         </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
 
 </manifest>
