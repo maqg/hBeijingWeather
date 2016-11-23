@@ -1,9 +1,7 @@
 package com.zz.henry.hbeijingweather;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,7 +17,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +27,7 @@ public class MainActivity extends Activity {
     public final static int LOAD_PROGRESS = 0;
     public final static int LOAD_COMPLETE = 1;
     public final static int LOAD_ERROR = 2;
+    public final static int LOAD_PIC_COMPLETE = 3;
 
     Button mButton = null;
     TextView mTextView = null;
@@ -64,7 +62,7 @@ public class MainActivity extends Activity {
                 body += "日期：" + date + "\n";
                 body += "天气情况：" + weather + "\n";
                 body += "风速：" + wind + "\n";
-                body += "温度" + temperature + "\n";
+                body += "温度：" + temperature + "\n";
 
                 view.setText(body);
             }
@@ -78,13 +76,14 @@ public class MainActivity extends Activity {
             String content;
 
             switch (msg.what) {
+
                 case LOAD_PROGRESS:
                     mTextView.setText("数据获取中，请稍候......");
                     break;
+
                 case LOAD_COMPLETE:
 
                     String textMain = "";
-                    Bitmap bitmap = null;
                     String picUrl = null;
 
                     content = (String) msg.obj;
@@ -117,7 +116,7 @@ public class MainActivity extends Activity {
 
                         textMain += "日期：" + date + "\n";
                         textMain += "实时：" + realtime + "\n";
-                        textMain += "位置：" + location + "\n";
+                        textMain += "位置：" + "北京市" + "\n";
                         textMain += "PM2.5：" + pm25 + "\n";
                         textMain += "天气情况：" + weather + "\n";
                         textMain += "风速：" + wind + "\n";
@@ -129,22 +128,21 @@ public class MainActivity extends Activity {
                         e.printStackTrace();
                     }
 
-                    /*
-                    try {
-                        bitmap = ImageService.getImageBitmap(picUrl);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (bitmap != null) {
-                        imageView.setImageBitmap(bitmap);
-                    }
-                    */
-
-
+                    createPictureThread(picUrl);
                     mTextView.setText(textMain);
 
                     break;
+
+                case LOAD_PIC_COMPLETE:
+
+                    Bitmap bitmap = (Bitmap) msg.obj;
+                    if (bitmap != null) {
+                        imageView.setImageBitmap(bitmap);
+                    }
+                    break;
+
                 case LOAD_ERROR:
+
                     content = (String) msg.obj;
                     mTextView.setText(content);
                     break;
@@ -156,7 +154,6 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //mContext = this;
         setContentView(R.layout.activity_main);
 
         mButton = (Button) findViewById(R.id.button1);
@@ -167,16 +164,16 @@ public class MainActivity extends Activity {
         views.add((TextView) findViewById(R.id.day2));
         views.add((TextView) findViewById(R.id.day3));
 
-        GetResourceInfo();
+        createWeatherThread();
 
         mButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                GetResourceInfo();
+                createWeatherThread();
             }
         });
     }
 
-    public void GetResourceInfo() {
+    public void createWeatherThread() {
         new Thread() {
             public void run() {
 
@@ -200,6 +197,31 @@ public class MainActivity extends Activity {
                     msg.obj = "获取数据错误，确认连上网啦！！";
                 }
                 handler.sendMessage(msg);
+
+            }
+        }.start();
+    }
+
+
+    public void createPictureThread(final String picUrl) {
+        new Thread() {
+            public void run() {
+
+                Message msg = new Message();
+                Bitmap bitmap = null;
+
+                msg.what = LOAD_PIC_COMPLETE;
+
+                try {
+                    bitmap = ImageService.getImageBitmap(picUrl);
+                    msg.obj = bitmap;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (bitmap != null) {
+                    handler.sendMessage(msg);
+                }
 
             }
         }.start();
